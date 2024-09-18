@@ -4,15 +4,15 @@
   ((hash (buff 32))) ;; value is a hash of the credentials
 )
 
-;; Define a constant for the administrator's principal
-(define-constant admin-id 'ST1234.ADMIN.ADDRESS)  ;; replace 'ST1234.ADMIN.ADDRESS with the actual admin address
+;; Define a constant for the administrator's principal using a valid Stacks address
+(define-constant admin-id 'ST1GG7JH7XXBRJE0HZ4H2KDKJAF32VAB6N440KZK)  ;; Replace 'ST1GG7JH7XXBRJE0HZ4H2KDKJAF32VAB6N440KZK with the actual admin address
 
-;; Check if the caller is the admin
+;; Function to check if the caller is the admin
 (define-read-only (is-admin (caller principal))
   (is-eq caller admin-id)
 )
 
-;; Function to log actions (this is a simple representation, you might need a more complex logging system)
+;; Function to log actions; this is a simple representation and might be expanded for more complex systems
 (define-map actions-log
   ((id uint) (action (string-ascii 128)) (timestamp uint))  ;; stores log with user ID, action, and timestamp
   ((details (string-ascii 256)))  ;; stores additional details of the action
