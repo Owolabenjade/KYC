@@ -4,12 +4,25 @@
   ((hash (buff 32))) ;; value is a hash of the credentials
 )
 
+;; Define a map for logging actions
+(define-map actions-log
+  ((id uint) (timestamp uint)) ;; key is user id and timestamp
+  ((action (string-ascii 128))) ;; value is the action taken
+)
+
 ;; Define an admin role using a constant variable
 (define-constant admin-id u1)
 
 ;; Check if the caller is the admin
 (define-read-only (is-admin (caller principal))
   (eq? caller (var-get admin-id))
+)
+
+;; Function to log actions
+(define-private (log-action (id uint) (action-description (string-ascii 128)))
+  (map-set actions-log
+           ((id id) (timestamp block-height))
+           ((action action-description)))
 )
 
 ;; Function to register a new user with their credentials hash
@@ -27,17 +40,23 @@
     (map-insert user-credentials
                 ((id id))
                 ((hash hash)))
+
+    ;; Log the registration action
+    (log-action id u"User Registered")
+
     (ok u"Registration successful")
   )
 )
 
 ;; Function to verify a user's credentials
-(define-read-only (verify-user-credentials (id uint) (provided-hash (buff 32)))
+(define-public (verify-user-credentials (id uint) (provided-hash (buff 32)))
   (let ((user-record (map-get? user-credentials ((id id)))))
     (match user-record
       record
         (if (eq? (get hash record) provided-hash)
-            (ok u"User verified successfully")
+            (begin
+              (log-action id u"User Verified")
+              (ok u"User verified successfully"))
             (err u"Credentials do not match"))
       (err u"No such user")
     )
@@ -59,6 +78,10 @@
     (map-set user-credentials
              ((id id))
              ((hash new-hash)))
+
+    ;; Log the update action
+    (log-action id u"Credentials Updated")
+
     (ok u"Credentials updated successfully")
   )
 )
