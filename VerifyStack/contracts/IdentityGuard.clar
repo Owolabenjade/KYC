@@ -5,7 +5,7 @@
 )
 
 ;; Define a constant for the administrator's principal using a valid Stacks address
-(define-constant admin-id 'ST1GG7JH7XXBRJE0HZ4H2KDKJAF32VAB6N440KZK)  ;; Replace 'ST1GG7JH7XXBRJE0HZ4H2KDKJAF32VAB6N440KZK with the actual admin address
+(define-constant admin-id ST1GG7JH7XXBRJE0HZ4H2KDKJAF32VAB6N440KZK)
 
 ;; Function to check if the caller is the admin
 (define-read-only (is-admin (caller principal))
