@@ -7,6 +7,10 @@
 ;; Define a constant for the administrator's principal using a valid Stacks address
 (define-constant admin-id 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM)
 
+;; Define constants for input validation
+(define-constant MAX_ID u1000000)  ;; Maximum allowed user ID
+(define-constant HASH_BYTE_LENGTH u32)  ;; Expected length of hash in bytes
+
 ;; Function to check if the caller is the admin
 (define-read-only (is-admin (caller principal))
   (is-eq caller admin-id)
@@ -21,6 +25,10 @@
 ;; Function to register a new user with their credentials hash
 (define-public (register-new-user (id uint) (hash (buff 32)))
   (begin
+    ;; Input validation
+    (asserts! (< id MAX_ID) (err u"Invalid user ID"))
+    (asserts! (is-eq (len hash) HASH_BYTE_LENGTH) (err u"Invalid hash length"))
+
     ;; Ensure the ID is not already registered
     (asserts! (is-none (map-get? user-credentials { id: id }))
               (err u"User already exists"))
@@ -45,12 +53,18 @@
 
 ;; Function to verify a user's credentials
 (define-read-only (verify-user-credentials (id uint) (provided-hash (buff 32)))
-  (let ((user-record (map-get? user-credentials { id: id })))
-    (match user-record
-      user-data (if (is-eq (get hash user-data) provided-hash)
-                    (ok u"User verified successfully")
-                    (err u"Credentials do not match"))
-      (err u"No such user")
+  (begin
+    ;; Input validation
+    (asserts! (< id MAX_ID) (err u"Invalid user ID"))
+    (asserts! (is-eq (len provided-hash) HASH_BYTE_LENGTH) (err u"Invalid hash length"))
+
+    (let ((user-record (map-get? user-credentials { id: id })))
+      (match user-record
+        user-data (if (is-eq (get hash user-data) provided-hash)
+                      (ok u"User verified successfully")
+                      (err u"Credentials do not match"))
+        (err u"No such user")
+      )
     )
   )
 )
@@ -58,6 +72,10 @@
 ;; Function to update an existing user's credentials
 (define-public (update-user-hash (id uint) (new-hash (buff 32)))
   (begin
+    ;; Input validation
+    (asserts! (< id MAX_ID) (err u"Invalid user ID"))
+    (asserts! (is-eq (len new-hash) HASH_BYTE_LENGTH) (err u"Invalid hash length"))
+
     ;; Ensure the user is registered before updating
     (asserts! (is-some (map-get? user-credentials { id: id }))
               (err u"User not found"))
