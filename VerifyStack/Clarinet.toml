@@ -9,6 +9,11 @@ requirements = []
 path = 'contracts/IdentityGuard.clar'
 clarity_version = 2
 epoch = 2.5
+
+[contracts.role-manager]
+path = 'contracts/role-manager.clar'
+clarity_version = 2
+epoch = 2.5
 [repl.analysis]
 passes = ['check_checker']
 
