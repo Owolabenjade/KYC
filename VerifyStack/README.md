@@ -63,6 +63,32 @@ This project implements basic security controls; however, before deploying it in
 
 We welcome contributions to this project. If you have suggestions or improvements, please fork the repository and submit a pull request.
 
-## Contact
+## Project Structure
 
-For support or further information, contact [owolabenjade@gmial.com].
+identity-verification/
+├── contracts/
+│   ├── identity-guard.clar     # Core identity verification (implemented)
+│   │   - User registration
+│   │   - Credential verification  
+│   │   - Admin controls
+│   │   - Action logging
+│   │
+│   ├── role-manager.clar       # Role and permissions management (next)
+│   │   - Role definitions
+│   │   - Permission assignments
+│   │   - Access control
+│   │   - Role hierarchies
+│   │
+│   ├── audit-logger.clar       # Audit trail management (future)
+│   │   - Detailed action logs
+│   │   - Event tracking
+│   │   - Report generation
+│   │
+│   ├── credential-store.clar   # Secure credential storage (future) 
+│   │   - Hash management
+│   │   - Encryption handling
+│   │   - Secure updates
+│   │
+│   └── tests/                  # Contract tests
+│
+└── README.md                  # Documentation
